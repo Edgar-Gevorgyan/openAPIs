@@ -1,0 +1,637 @@
+openapi: 3.0.3
+
+info:
+  title: Power Consumption API
+  version: 1.0.11
+  
+tags:
+  - name: Meter
+  - name: Building
+  - name: Power System
+  - name: User
+  
+paths:
+  /meters:
+    post:
+      tags:
+        - Meter
+      summary: Add a new meter
+      operationId: addMeter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Meter'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RessourceCreation'
+                
+  /meters/{id}:
+    put:
+      tags:
+        - Meter
+      summary: Update an existing meter
+      operationId: updateMeter
+      parameters:
+        - name: id
+          in: path
+          description: ID of meter
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Meter'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RessourceCreation'
+    get:
+      tags:
+        - Meter
+      summary: Find meter by ID
+      operationId: getMeterById
+      parameters:
+        - name: id
+          in: path
+          description: ID of meter
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meter'
+    delete:
+      tags:
+        - Meter
+      summary: Deletes a meter
+      operationId: deleteMeter
+      parameters:
+        - name: id
+          in: path
+          description: ID of meter
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+                
+  /meters/readings:
+    get:
+      tags:
+        - Meter
+      summary: Get meter readings
+      operationId: getMeterReadings
+      parameters:
+        - name: userId
+          in: query
+          description: ID of user
+          schema:
+            type: string
+        - name: buildingId
+          in: query
+          description: ID of building
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: starting date
+          schema:
+            type: string
+        - name: endDate
+          in: query
+          description: ending date (included)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MeterReadings'
+                
+  /meters/{id}/readings:
+    post:
+      tags:
+        - Meter
+      summary: Add a new meter reading
+      operationId: addMeterReading
+      parameters:
+        - name: id
+          in: path
+          description: ID of meter
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeterReading'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    get:
+      tags:
+        - Meter
+      summary: Get meter readings by id
+      operationId: getMeterReadingsById
+      parameters:
+        - name: id
+          in: path
+          description: ID of meter
+          required: true
+          schema:
+            type: integer
+        - name: startDate
+          in: query
+          description: starting date
+          schema:
+            type: string
+        - name: endDate
+          in: query
+          description: ending date (included)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeterReadings'
+                    
+  /meters/{id}/errors:
+    post:
+      tags:
+        - Meter
+      summary: Add a new meter error
+      operationId: addMeterError
+      parameters:
+        - name: id
+          in: path
+          description: ID of meter
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeterError'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    get:
+      tags:
+        - Meter
+      summary: Get meter errors
+      operationId: getMeterErrors
+      parameters:
+        - name: id
+          in: path
+          description: ID of meter
+          required: true
+          schema:
+            type: integer
+        - name: startDate
+          in: query
+          description: starting date
+          schema:
+            type: string
+        - name: endDate
+          in: query
+          description: ending date (included)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeterErrorState'
+    
+  /buildings:
+    post:
+      tags:
+        - Building
+      summary: Add a new building
+      operationId: addBuilding
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Building'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RessourceCreation'
+  
+  /buildings/{id}:
+    put:
+      tags:
+        - Building
+      summary: Update an existing building
+      operationId: updateBuilding
+      parameters:
+        - name: id
+          in: path
+          description: ID of building
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Building'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RessourceCreation'
+    get:
+      tags:
+        - Building
+      summary: Find building by ID
+      operationId: getBuildingById
+      parameters:
+        - name: id
+          in: path
+          description: ID of building
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+    delete:
+      tags:
+        - Building
+      summary: Deletes a building
+      operationId: deleteBuilding
+      parameters:
+        - name: id
+          in: path
+          description: ID of building
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    
+  /powerSystem:
+    post:
+      tags:
+        - Power System
+      summary: Add a new power system
+      operationId: addPowerSystem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PowerSystem'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RessourceCreation'
+                
+  /powerSystem/{id}:
+    put:
+      tags:
+        - Power System
+      summary: Update an existing power system
+      operationId: updatePowerSystem
+      parameters:
+        - name: id
+          in: path
+          description: ID of power system
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PowerSystem'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RessourceCreation'
+    get:
+      tags:
+        - Power System
+      summary: Find power system by ID
+      operationId: getPowerSystemById
+      parameters:
+        - name: id
+          in: path
+          description: ID of power system
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PowerSystem'
+    delete:
+      tags:
+        - Power System
+      summary: Deletes a power system
+      operationId: deletePowerSystem
+      parameters:
+        - name: id
+          in: path
+          description: ID of power system
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /users:
+    post:
+      tags:
+        - User
+      summary: Add a new user
+      operationId: addUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserData'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RessourceCreation'
+    get:
+      tags:
+        - User
+      summary: Get all users
+      operationId: getUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /users/{id}:
+    put:
+      tags:
+        - User
+      summary: Update an existing user
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserData'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RessourceCreation'
+    get:
+      tags:
+        - User
+      summary: Find user by ID
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+        - User
+      summary: Deletes a user
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+    RessourceCreation:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          type: string
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+    Building:
+      type: object
+      properties:
+        name:
+          type: string
+        userId:
+          type: string
+    PowerSystem:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        buildingId:
+          type: string
+        miscInfo:
+          type: object
+    UserData:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        buildingIds:
+          type: array
+          items:
+            type: string
+        location:
+          type: string
+        currentEnergyFlow:
+          type: string
+        yesterdayEnergyFlow:
+          type: string
+        peakPower:
+          type: integer
+    Meter:
+      type: object
+      properties:
+        buildingId:
+          type: string
+        linesNumber:
+          type: integer
+        powerSystemIds:
+          type: array
+          items:
+            type: string
+    MeterReading:
+      type: object
+      properties:
+        date:
+          type: string
+        readings:
+          type: array
+          items:
+            type: integer
+    MeterReadings:
+      type: object
+      properties:
+        meterId:
+          type: string
+        currentPower:
+          type: integer
+        environmentalKPI:
+          type: integer
+        production:
+          type: integer
+        readings:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeterReading'
+    MeterError:
+      type: object
+      properties:
+        date:
+          type: string
+        message: 
+          type: string
+    MeterErrorState:
+      type: object
+      properties:
+        errorState:
+          type: string
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          

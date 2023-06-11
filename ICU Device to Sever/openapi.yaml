@@ -1,0 +1,273 @@
+openapi: 3.0.3
+info:
+  title: ICU Device to Sever
+  description: |-
+    This REST-API describes the data interface level between the ICU-Controller and the ICU-Server
+  version: "1.1"
+tags:
+  - name: device
+paths:
+  /device/Register:
+    post:
+      tags:
+        - device
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: No error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '201':
+          description: Device not in database
+  /device/Commands:
+    post:
+      tags:
+        - device
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CommandsRequest'
+      responses:
+        '200':
+          description: No error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandsResponse'
+        '201':
+          description: Device not in database
+  /device/CommandSuccess:
+    post:
+      tags:
+        - device
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CommandSuccessRequest'
+      responses:
+        '200':
+          description: No error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandSuccessResponse'
+        '201':
+          description: Device not in database
+  /device/StatusReport:
+    post:
+      tags:
+        - device
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StatusReportRequest'
+      responses:
+        '200':
+          description: No error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusReportResponse'
+        '201':
+          description: Device not in database
+  /device/AlarmReport:
+    post:
+      tags:
+        - device
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AlarmReportRequest'
+      responses:
+        '200':
+          description: No error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlarmReportResponse'
+        '201':
+          description: Device not in database
+          
+components:
+  schemas:
+    Status:
+      type: object
+      properties:
+        BatPercent:
+          type: integer
+          example: 50
+        RSSI:
+          type: integer
+          example: 31
+        DataTime:
+          type: integer
+          description: "formatted as: “yyyymmddHHMMss”"
+          example: 20201215112205
+        LastConnect:
+          type: integer
+          example: 31
+        Temperature:
+          type: number
+          example: 25.5
+        IMEI:
+          type: string
+          example: "866758043900618"
+        ICCID:
+          type: string
+          example: "89860040191793531997"
+        InitKey:
+          type: string
+          example: "XXXX-XXXX-XXXX-XXXX"
+        LangCode:
+          type: string
+          example: "EN"
+          enum:
+            - "DE"
+            - "EN"
+            - "IT"
+            - "FR"
+            - "ES"
+        LastVin:
+          type: number
+          description: Volt
+          example: 24.5
+        LastCurrent:
+          type: integer
+          description: mA
+          example: 1000
+        TrapState:
+          type: integer
+          description: 1=hold, 0=release
+          example: 0
+          enum:
+            - 0
+            - 1
+        FwVersion:
+          type: string
+          example: "1.0"
+    RegisterRequest:
+      type: object
+      properties:
+        imei:
+          type: string
+          example: "866758043900618"
+        iccid:
+          type: string
+          example: "89860040191793531997"
+    RegisterResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            ResponeCode: 
+              type: integer
+              example: 200
+            Token: 
+              type: string
+              example: "xxxxxxxxxxxxxxxxxxxx"
+            DataTime: 
+              type: integer
+              description: "formatted as: “yyyymmddHHMMss”"
+              example: 20201215112205
+    CommandsRequest:
+      type: object
+      properties:
+        Token: 
+          type: string
+          example: "xxxxxxxxxxxxxxxxxxxx"
+    CommandsResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            ResponeCode: 
+              type: integer
+              example: 200
+            id: 
+              type: integer
+              description: refer to the COMMAND ID Table
+              example: 0
+            DataTime: 
+              type: integer
+              description: "formatted as: “yyyymmddHHMMss”"
+              example: 20201215112205
+    CommandSuccessRequest:
+      type: object
+      properties:
+        id: 
+          type: integer
+          example: 1
+        Token: 
+          type: string
+          example: "xxxxxxxxxxxxxxxxxxxx"
+        ErrorCode: 
+          type: integer
+          description: refer to error code table
+          example: 0
+    CommandSuccessResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            ResponeCode: 
+              type: integer
+              example: 200
+            id: 
+              type: integer
+              description: refer to the COMMAND ID Table
+              example: 0
+            DataTime: 
+              type: integer
+              description: "formatted as: “yyyymmddHHMMss”"
+              example: 20201215112205
+    StatusReportRequest:
+      type: object
+      properties:
+        Token: 
+          type: string
+          example: "xxxxxxxxxxxxxxxxxxxx"
+        Status:
+          $ref: '#/components/schemas/Status'
+    StatusReportResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            ResponeCode: 
+              type: integer
+              example: 200
+    AlarmReportRequest:
+      type: object
+      properties:
+        Token: 
+          type: string
+          example: "xxxxxxxxxxxxxxxxxxxx"
+        Status:
+          $ref: '#/components/schemas/Status'
+    AlarmReportResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            ResponeCode: 
+              type: integer
+              example: 200
+    
+    
+    
+    

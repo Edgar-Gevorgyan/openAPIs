@@ -1,0 +1,663 @@
+openapi: 3.0.3
+
+info:
+  title: Cozm Travel API
+  description: |-
+    Welcome to the Cozm Travel API Documentation. This API is designed to assist developers in integrating with Cozm Travel's services and offers a comprehensive solution for managing downstream compliance.
+    Cozm Travel is a compliance automation platform specialising in automating downstream compliance activities for cross-border workers. The platform uses a series of API endpoints to manage this process, allowing for seamless interaction with government portals, including social security applications, EU Posted Worker Notifications, business visa applications, and other compliance-related tasks.
+    This API documentation provides an overview of the available endpoints and their usage, including user authentication, initiating compliance requests, retrieving country-specific form fields, and managing travel compliance tickets.
+  version: 1.0.0
+  
+tags:
+  - name: Compliance
+  
+servers:
+  - url: https://api.cozmtravel.com
+    description: Mock server
+  
+paths:
+  /compliance/initiate:
+    post:
+      tags:
+        - Compliance
+      operationId: initiateCompliance
+      summary: Start a new compliance request
+      description: Initiate a compliance request for an individual planning a trip.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiateComplianceRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitiateComplianceResponse'
+        '400':
+          description: Invalid request, the error message will explain why.
+        '401':
+          description: Invalid authentication credentials.
+        '403':
+          description: Not authorised to perform the requested operation.
+        '404':
+          description: Requested resource could not be found.
+        '429':
+          description: Too many requests made quickly, rate limit exceeded.
+        '500':
+          description: Something is wrong on Cozm Travel's end.
+        '502':
+          description: Received an invalid response from the upstream server. Please try again later.
+  
+  /compliance/form-fields:
+    get:
+      tags:
+        - Compliance
+      operationId: formFieldsCompliance
+      summary: Retrieve compliance form fields
+      description: Retrieve the required data fields for the government portal of a specified country.
+      parameters:
+        - in: query
+          name: country
+          description: The official name of the country recognised internationally. (e.g., "sweden"). This key is case-insensitive but it's recommended to use lowercase letters for uniformity and to avoid any potential errors.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormFieldsComplianceResponse'
+        '400':
+          description: Invalid request, the error message will explain why.
+        '401':
+          description: Invalid authentication credentials.
+        '403':
+          description: Not authorised to perform the requested operation.
+        '404':
+          description: Requested resource could not be found.
+        '429':
+          description: Too many requests made quickly, rate limit exceeded.
+        '500':
+          description: Something is wrong on Cozm Travel's end.
+        '502':
+          description: Received an invalid response from the upstream server. Please try again later.
+                
+  /compliance/submit:
+    post:
+      tags:
+        - Compliance
+      operationId: submitCompliance
+      summary: Submit compliance data
+      description: Submit the required data to complete government portals (web or pdf) based on the chosen country. The request body will vary based on the country specified.
+      parameters:
+        - in: query
+          name: country
+          description: The official name of the country recognised internationally. (e.g., "sweden"). This key is case-insensitive but it's recommended to use lowercase letters for uniformity and to avoid any potential errors.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitComplianceRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitComplianceResponse'
+        '400':
+          description: Invalid request, the error message will explain why.
+        '401':
+          description: Invalid authentication credentials.
+        '403':
+          description: Not authorised to perform the requested operation.
+        '404':
+          description: Requested resource could not be found.
+        '429':
+          description: Too many requests made quickly, rate limit exceeded.
+        '500':
+          description: Something is wrong on Cozm Travel's end.
+        '502':
+          description: Received an invalid response from the upstream server. Please try again later.
+
+  /compliance/requests:
+    get:
+      tags:
+        - Compliance
+      operationId: getFilteredComplianceRequests
+      summary: List compliance requests based on a query string and filters
+      description: Retrieve a list of compliance requests made by the customer based on a query string and filters.
+      parameters:
+        - in: query
+          name: search
+          description: The query term to search for in the tickets
+          example: visa
+          schema:
+            type: string
+        - in: query
+          name: id
+          description: User ID
+          schema:
+            type: string
+        - in: query
+          name: name
+          description: Name of the user associated with the ticket
+          schema:
+            type: string
+        - in: query
+          name: birthday
+          description: User's birthday (YYYY-MM-DD format)
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: homeCountry
+          description: User's home country
+          schema:
+            type: string
+        - in: query
+          name: hostCountry
+          description: The host country of the compliance request
+          schema:
+            type: string
+        - in: query
+          name: status
+          description: Ticket status
+          schema:
+            type: string
+            enum: ["open", "closed", "pending", "..."]
+        - in: query
+          name: createdBefore
+          description: Filter tickets created before this date (YYYY-MM-DD format)
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: createdAfter
+          description: Filter tickets created after this date (YYYY-MM-DD format)
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: pageSize
+          description: The number of results to return per page
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: pageNumber
+          description: The page number to return
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplianceRequestsResponse'
+        '400':
+          description: Invalid request, the error message will explain why.
+        '401':
+          description: Invalid authentication credentials.
+        '403':
+          description: Not authorised to perform the requested operation.
+        '404':
+          description: Requested resource could not be found.
+        '429':
+          description: Too many requests made quickly, rate limit exceeded.
+        '500':
+          description: Something is wrong on Cozm Travel's end.
+        '502':
+          description: Received an invalid response from the upstream server. Please try again later.
+
+  /compliance/requests/{complianceRequestId}:
+    get:
+      tags:
+        - Compliance
+      operationId: getComplianceRequestsById
+      summary: Retrieve specific compliance request
+      description: Retrieve a specific compliance request.
+      parameters:
+        - in: path
+          name: complianceRequestId
+          description: The unique ID for the compliance request
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplianceRequestResponse'
+        '400':
+          description: Invalid request, the error message will explain why.
+        '401':
+          description: Invalid authentication credentials.
+        '403':
+          description: Not authorised to perform the requested operation.
+        '404':
+          description: Requested resource could not be found.
+        '429':
+          description: Too many requests made quickly, rate limit exceeded.
+        '500':
+          description: Something is wrong on Cozm Travel's end.
+        '502':
+          description: Received an invalid response from the upstream server. Please try again later.
+
+components:
+  schemas:
+    Location:
+      type: object
+      properties:
+        country:
+          type: string
+          example: "Sweden"
+        city:
+          type: string
+          example: "Stockholm"
+        zipCode:
+          type: string
+          readOnly: true
+          example: "12345"
+        street:
+          type: string
+          readOnly: true
+          example: "Storgatan 1"
+    
+    TravelDates:
+      type: object
+      properties:
+        departureDate:
+          type: string
+          format: date
+          example: "2023-05-01"
+        returnDate:
+          type: string
+          format: date
+          example: "2023-05-31"
+    
+    TripDetails:
+      type: object
+      properties:
+        purpose:
+          type: string
+          example: "Business meeting"
+        duration:
+          type: integer
+          example: 30
+    
+    PersonalInformation:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "John Doe"
+        nationality:
+          type: string
+          example: "Swedish"
+        passportNumber:
+          type: string
+          example: "123456789"
+    
+    Passport:
+      type: object
+      properties:
+        number:
+          type: string
+          example: "123456789"
+        expiryDate:
+          type: string
+          format: date
+          example: "2030-05-01"
+    
+    Employer:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Great Company"
+        address:
+          type: string
+          example: "Storgatan 1, Stockholm"
+        contactNumber:
+          type: string
+          example: "+46701234567"
+    
+    EmergencyContact:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Jane Doe"
+        contactNumber:
+          type: string
+          example: "+4670654321"
+    
+    SocialSecurityInfo:
+      type: object
+      properties:
+        coverageStartDate:
+          type: string
+          format: date
+          example: "2023-05-01"
+        coverageEndDate:
+          type: string
+          format: date
+          example: "2023-05-31"
+        certificateNumber:
+          type: string
+          example: "SSC12345"
+        issuingAuthority:
+          type: string
+          example: "Swedish Social Security Agency"
+    
+    GovernmentPortalData:
+      type: object
+      properties:
+        PWN:
+          $ref: '#/components/schemas/PWNData'
+        SS:
+          $ref: '#/components/schemas/SSData'
+    
+    PWNFields:
+      type: object
+      description: Posted Worker Notification Fields
+      properties:
+        personalInformation:
+          $ref: '#/components/schemas/PersonalInformation'
+        homeLocation:
+          $ref: '#/components/schemas/Location'
+        hostLocation:
+          $ref: '#/components/schemas/Location'
+        employer:
+          $ref: '#/components/schemas/Employer'
+        travelDates:
+          $ref: '#/components/schemas/TravelDates'
+        tripPurpose:
+          type: string
+        duration:
+          type: integer
+        visaType:
+          type: string
+        previousVisits:
+          type: boolean
+        emergencyContact:
+          $ref: '#/components/schemas/EmergencyContact'
+    
+    PWNData:
+      type: object
+      description: Posted Worker Notification Data
+      properties:
+        personalInformation:
+          $ref: '#/components/schemas/PersonalInformation'
+        homeLocation:
+          $ref: '#/components/schemas/Location'
+        hostLocation:
+          $ref: '#/components/schemas/Location'
+        employer:
+          $ref: '#/components/schemas/Employer'
+        travelDates:
+          $ref: '#/components/schemas/TravelDates'
+        tripPurpose:
+          type: string
+          example: "Business meeting"
+        duration:
+          type: integer
+          example: 30
+        visaType:
+          type: string
+          example: "Business Visa"
+        previousVisits:
+          type: boolean
+          example: false
+        emergencyContact:
+          $ref: '#/components/schemas/EmergencyContact'
+    
+    SSFields:
+      type: object # similar structure for BV fields
+      description: Social Security Fields
+    
+    SSData:
+      type: object
+      description: Social Security Data
+      properties:
+        personalInformation:
+          $ref: '#/components/schemas/PersonalInformation'
+        employer:
+          $ref: '#/components/schemas/Employer'
+        socialSecurityInfo:
+          $ref: '#/components/schemas/SocialSecurityInfo'
+    
+    BVFields:
+      type: object # similar structure for BV fields
+      description: Business Visa Fields
+      
+    Employee:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "unique-compliance-request-id-1"
+        name:
+          type: string
+          example: "John Doe"
+        birthday:
+          type: string
+          format: date
+          example: "1980-05-12"
+        homeCountry:
+          type: string
+          example: "USA"
+          
+    Request:
+      type: object
+      properties:
+        complianceRequestId:
+          type: string
+          example: "unique-compliance-request-id-1"
+        status:
+          type: string
+          example: "pending"
+        employee:
+          $ref: '#/components/schemas/Employee'
+        hostCountry:
+          type: string
+          example: "Sweden"
+        issue:
+          type: string
+          example: "visa processing delay"
+        createdDate:
+          type: string
+          format: date
+          example: "2023-01-15"
+        lastUpdated:
+          type: string
+          format: date
+          example: "2023-03-10"
+    
+    InitiateComplianceRequest:
+      type: object
+      properties:
+        homeLocation:
+          $ref: '#/components/schemas/Location'
+        hostLocation:
+          $ref: '#/components/schemas/Location'
+        travelDates:
+          $ref: '#/components/schemas/TravelDates'
+        nationality:
+          type: string
+        passport:
+          $ref: '#/components/schemas/Passport'
+        tripDetails:
+          $ref: '#/components/schemas/TripDetails'
+        complianceTypes:
+          type: array
+          items:
+            type: string
+            enum: ["PWN", "SS", "BV"]
+          example: ["PWN", "SS"]
+          
+    InitiateComplianceResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: "Compliance process successfully initiated."
+        data:
+          type: object
+          properties:
+            complianceRequestId:
+              type: string
+              example: "unique-compliance-request-id"
+            complianceTypes:
+              type: array
+              items:
+                type: string
+              example: ["PWN", "SS"]
+            nextStep:
+              type: object
+              properties:
+                apiEndpoint:
+                  type: string
+                  format: uri
+                  example: "https://api.cozmtravel.com/compliance/submit?country=sweden"
+                httpMethod:
+                  type: string
+                  example: "POST"
+                requestBody:
+                  type: object
+                  properties:
+                    complianceRequestId:
+                      type: string
+                      example: "unique-compliance-request-id"
+                    governmentPortalData:
+                      $ref: '#/components/schemas/GovernmentPortalData'
+          
+    FormFieldsComplianceResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: "Compliance form fields successfully retrieved."
+        data:
+          type: object
+          properties:
+            country:
+              type: string
+              example: "Sweden"
+            complianceType:
+              type: array
+              items:
+                type: string
+                enum: ["PWN", "SS", "BV"]
+              example: ["PWN", "SS"]
+            requiredFields:
+              type: object
+              properties:
+                PWN:
+                  $ref: '#/components/schemas/PWNFields'
+                SS:
+                  $ref: '#/components/schemas/SSFields'
+                BV:
+                  $ref: '#/components/schemas/BVFields'
+          
+    SubmitComplianceRequest:
+      type: object
+      properties:
+        complianceRequestId:
+          type: string
+          example: "unique-compliance-request-id"
+        country:
+          type: string
+          example: "sweden"
+        complianceTypes:
+          type: array
+          items:
+            type: string
+            enum: ["PWN", "SS", "BV"]
+          example: ["PWN", "SS"]
+        governmentPortalData:
+          $ref: '#/components/schemas/GovernmentPortalData'
+    
+    SubmitComplianceResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: "Compliance request successfully submitted"
+        data:
+          type: object
+          properties:
+            complianceRequestId:
+              type: string
+              example: "unique-compliance-request-id"
+            governmentPortalData:
+              $ref: '#/components/schemas/GovernmentPortalData'
+    
+    ComplianceRequestsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: "Compliance requests successfully retrieved."
+        data:
+          type: object
+          properties:
+            totalResults:
+              type: integer
+              example: 100
+            pageSize:
+              type: integer
+              example: 10
+            pageNumber:
+              type: integer
+              example: 1
+            requests:
+              type: array
+              items:
+                $ref: '#/components/schemas/Request'
+    
+    ComplianceRequestResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: "Compliance request successfully retrieved."
+        data:
+          $ref: '#/components/schemas/Request'
+  
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer  
+      
+security:
+  - bearerAuth: []
