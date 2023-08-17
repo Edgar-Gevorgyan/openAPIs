@@ -1,0 +1,85 @@
+openapi: 3.0.3
+info:
+  title: Collection 1
+  description: A collection of API's to replace AeroParker's API's
+  version: 1.0.0
+
+servers:
+  - url: https://slsdev.rezcommsls.com/v1/reports
+
+tags:
+  - name: Bookings
+    description: Contains API's for Reporting of Bookings.
+
+paths:
+  /bookings:
+    get:
+      summary: Get booking reports
+      description: Retrieve booking reports based on filters
+      tags:
+        - Bookings
+      parameters:
+        - $ref: '#/components/parameters/accessId'
+        - $ref: '#/components/parameters/accessKey'
+        - name: brandId
+          in: query
+          schema:
+            type: string
+          description: The size of brandId must be 3 characters long. Only RDU is allowed.
+          example: 'HER'
+        - name: queryBy
+          in: query
+          schema:
+            type: string
+          description: The predicate used to filter the records in the response.
+          example: 'valid_from'
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Start date and time for filtering records.
+          example: '2023-05-17T00:00:00'
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date
+          description: End date and time for filtering records.
+          example: '2023-05-17T23:59:59'
+        - name: fields
+          in: query
+          schema:
+            type: string
+          description: List of fields to include in the response.
+          example: 'orderreference,uuid,first_name'
+        - name: recordsPerPage
+          in: query
+          schema:
+            type: number
+          description: Limit the number of results per page in the result set.
+          example: 10
+        - name: pageNumber
+          in: query
+          schema:
+            type: number
+          description: If included in the query string, the result set will contain records for the given page number.
+          example: 1
+      responses:
+        '200':
+          description: Successful response
+
+components:
+  parameters:
+    accessId:
+      name: secret_id
+      in: header
+      schema:
+        type: string
+      example: 'a0d551b07a8704cff0ef96c9f14c9fa9'
+    accessKey:
+      name: secret_key
+      in: header
+      schema:
+        type: string
+      example: 'your_access_key'
