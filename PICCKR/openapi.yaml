@@ -1,0 +1,392 @@
+openapi: 3.0.3
+info:
+  version: "1.0.0"
+  title: PICCKR API
+  description: API documentation for the PICCKR application
+servers:
+  - url: http://localhost:5000/api
+
+paths:
+  /auth/signup:
+    post:
+      summary: User sign up
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Success response
+
+  /auth/login:
+    post:
+      summary: User login
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Success response
+
+  /verification/sendCode:
+    post:
+      summary: Send verification code
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneRequest'
+      responses:
+        '200':
+          description: Success response
+
+  /verification/verifyCode:
+    post:
+      summary: Verify code
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationRequest'
+      responses:
+        '200':
+          description: Success response
+
+  /verification/resetPassword:
+    post:
+      summary: Reset password
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Success response
+
+  /users/{id}/updateProfilePic:
+    put:
+      summary: Update user's profile picture
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profilePicture:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Success response
+
+  /users/{id}:
+    get:
+      summary: Get user profile
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        '200':
+          description: Success response
+
+    put:
+      summary: Update user profile
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileUpdateRequest'
+      responses:
+        '200':
+          description: Success response
+
+    delete:
+      summary: Delete user account
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        '200':
+          description: Success response
+
+  /users/{id}/status:
+    put:
+      summary: Change user status
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserStatusUpdateRequest'
+      responses:
+        '200':
+          description: Success response
+
+  /bookings:
+    post:
+      summary: Create a new booking
+      tags:
+        - Bookings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '200':
+          description: Successful booking creation
+
+  /bookings/{bookingId}:
+    parameters:
+      - in: path
+        name: bookingId
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get booking details by ID
+      tags:
+        - Bookings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful retrieval of booking details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+
+    put:
+      summary: Update a booking
+      tags:
+        - Bookings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '200':
+          description: Successful booking update
+
+  /bookings/cancel/{bookingId}:
+    parameters:
+      - in: path
+        name: bookingId
+        required: true
+        schema:
+          type: string
+    put:
+      summary: Cancel a booking
+      tags:
+        - Bookings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful booking cancellation
+
+  /bookings/getUserBookings:
+    post:
+      summary: Get all bookings for a user
+      tags:
+        - Bookings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful retrieval of user bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    User:
+      type: object
+      properties:
+        phone:
+          type: string
+          example: "+17134197925"
+        first_name:
+          type: string
+          example: "Gabod"
+        last_name:
+          type: string
+          example: "123"
+        password:
+          type: string
+          example: "123"
+          writeOnly: true
+
+    UserLogin:
+      type: object
+      properties:
+        phone:
+          type: string
+          example: "+17134197925"
+        password:
+          type: string
+          example: "123"
+          writeOnly: true
+
+    PhoneRequest:
+      type: object
+      properties:
+        phone:
+          type: string
+          example: "+17134197925"
+
+    VerificationRequest:
+      type: object
+      properties:
+        phone:
+          type: string
+          example: "+17134197925"
+        code:
+          type: string
+          example: "220282"
+
+    ResetPasswordRequest:
+      type: object
+      properties:
+        phone:
+          type: string
+          example: "+17134197925"
+        code:
+          type: string
+          example: "220282"
+        newPassword:
+          type: string
+          example: "1234"
+
+    UserProfileUpdateRequest:
+      type: object
+      properties:
+        address:
+          type: string
+          example: "Lahore, Pakistan"
+
+    UserStatusUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "online"
+
+    Booking:
+      type: object
+      properties:
+        bookingId:
+          type: string
+          readOnly: true
+        pickupLocation:
+          $ref: '#/components/schemas/Location'
+        dropOffLocation:
+          $ref: '#/components/schemas/Location'
+        dropOffAddress:
+          type: string
+          example: "Destination Address"
+        pickupAddress:
+          type: string
+          example: "Pickup Address"
+        parcelDescription:
+          type: object
+          properties:
+            weight:
+              type: string
+              example: "5kg"
+            dimensions:
+              type: string
+              example: "30x20x10cm"
+            type:
+              type: string
+              example: "Box"
+        specialInstructions:
+          type: string
+          example: "Handle with care"
+    
+    Location:
+      type: object
+      properties:
+        longitude:
+          type: number
+          example: 123.456
+        latitude:
+          type: number
+          example: 78.901
