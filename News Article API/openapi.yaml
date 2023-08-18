@@ -1,0 +1,119 @@
+openapi: 3.0.3
+info:
+  title: News Article API
+  version: 1.0.0
+tags:
+  - name: Article
+    description: Operations related to news articles and their comments
+paths:
+  /articles/{article_id}/comments:
+    get:
+      summary: Retrieve paginated comments for a news article
+      tags:
+        - Article
+      operationId: getArticleComments
+      parameters:
+        - name: article_id
+          in: path
+          description: ID of the news article.
+          required: true
+          schema:
+            type: string
+          example: 'article123'
+        - name: page
+          in: query
+          description: Page number for pagination (1-based).
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          example: 1
+        - name: per_page
+          in: query
+          description: Number of comments per page.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+          example: 10
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentsResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: ID of the user.
+          example: 'user123'
+        username:
+          type: string
+          description: Username of the user.
+          example: 'johndoe'
+        profile_picture:
+          type: string
+          format: uri
+          description: URL to the user's profile picture.
+          example: '/users/user123/profile.jpg'
+
+    Comment:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        comment_text:
+          type: string
+          description: The text of the comment.
+          example: 'Great article! Thanks for sharing.'
+        comment_date:
+          type: string
+          format: date-time
+          description: Date and time the comment was posted.
+          example: '2023-08-18T10:30:00Z'
+
+    CommentsResponse:
+      type: object
+      properties:
+        total_comments:
+          type: integer
+          description: Total number of comments for the article.
+          example: 25
+        page:
+          type: integer
+          description: Current page number.
+          example: 1
+        per_page:
+          type: integer
+          description: Number of comments per page.
+          example: 10
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: integer
+          example: 400
+        error_message:
+          type: string
+          description: Description of the error.
+          example: 'Invalid request. The provided article_id is not valid.'
