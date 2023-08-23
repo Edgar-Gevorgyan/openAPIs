@@ -68,6 +68,12 @@ paths:
       responses:
         '200':
           description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
 
 components:
   parameters:
@@ -83,3 +89,91 @@ components:
       schema:
         type: string
       example: 'your_access_key'
+
+  schemas:
+    Booking:
+      type: object
+      properties:
+        orderreference:
+          type: string
+          description: Rezcomm Order Reference
+        uuid:
+          type: string
+          description: Unique Customer Identification Number
+        cpms_reference:
+          type: string
+          description: CPMS Reference from CPMS Provider for Parking bookings
+        product:
+          type: string
+          description: Type of product – CPK/LNG/FTT (Parking/Lounge/Fasttrack)
+        orderdate:
+          type: string
+          format: date-time
+          description: Date of Order
+        first_name:
+          type: string
+          description: Customer First Name
+        last_name:
+          type: string
+          description: Customer Last Name
+        email:
+          type: string
+          description: Customer Email
+        city:
+          type: string
+          description: Customer Address City
+        post_code:
+          type: string
+          description: Customer Address Post Code
+        mobilenumber:
+          type: string
+          description: Customer Mobile Number
+        email_consent:
+          type: boolean
+          description: Customer Marketing Consent for Email – True/False
+        vehicle_vrn:
+          type: string
+          description: Vehicle Registration Number for Parking Bookings
+        carpark_name:
+          type: string
+          description: Carpark Name for parking bookings
+        ordertotal:
+          type: number
+          description: Total Order Value
+        pspreference:
+          type: string
+          description: Payment Service Provider Payment Reference
+        amenddate:
+          type: string
+          format: date-time
+          description: Date order  was Amended in case order status is Amended
+        canceldate:
+          type: string
+          format: date-time
+          description: Date order  was Cancelled in case order status is Cancelled
+        voucher:
+          type: string
+          description: Discount Voucher in case used
+        made_as:
+          type: string
+          description: Customer made order as guest or member
+        orderstatus:
+          type: string
+          description: Status of Order
+        discount_amount:
+          type: number
+          description: Discount Amount in case Voucher was used
+        valid_from:
+          type: string
+          format: date-time
+          description: Parking Booking Valid from Date
+        start_time:
+          type: string
+          description: Parking Booking Valid from Time
+        valid_till:
+          type: string
+          format: date-time
+          description: Parking Booking Valid till Date
+        end_time:
+          type: string
+          description: Parking Booking Valid till Time
