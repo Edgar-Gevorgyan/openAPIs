@@ -1,0 +1,847 @@
+openapi: 3.0.3
+info:
+  title: Used Car Sales API
+  version: 1.0.0
+
+paths:
+  /cars:
+    get:
+      summary: Retrieve a list of cars with filtering options
+      parameters:
+        - name: category
+          in: query
+          description: Filter by car category
+          schema:
+            type: string
+        - name: brand
+          in: query
+          description: Filter by car brand
+          schema:
+            type: string
+        - name: model
+          in: query
+          description: Filter by car model
+          schema:
+            type: string
+        - name: fuel
+          in: query
+          description: Filter by fuel type
+          schema:
+            type: string
+        - name: procedure
+          in: query
+          description: Filter by car procedure
+          schema:
+            type: string
+        - name: start_price
+          in: query
+          description: Filter by minimum price
+          schema:
+            type: number
+        - name: end_price
+          in: query
+          description: Filter by maximum price
+          schema:
+            type: number
+        - name: year_of_sale
+          in: query
+          description: Filter by year of sale
+          schema:
+            type: integer
+        - name: state
+          in: query
+          description: Filter by state
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+    post:
+      summary: Create a new car
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarCreate'
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /cars/{carId}:
+    get:
+      summary: Retrieve details of a specific car
+      parameters:
+        - $ref: '#/components/parameters/carId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    put:
+      summary: Update details of a specific car
+      parameters:
+        - $ref: '#/components/parameters/carId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarUpdate'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    delete:
+      summary: Delete a specific car
+      parameters:
+        - $ref: '#/components/parameters/carId'
+      responses:
+        '204':
+          description: Successful response
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /brands:
+    get:
+      summary: Retrieve a list of car brands
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Brand'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    post:
+      summary: Create a new car brand
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandCreate'
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /brands/{brandId}:
+    get:
+      summary: Retrieve details of a specific brand
+      parameters:
+        - $ref: '#/components/parameters/brandId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+    put:
+      summary: Update an existing car brand
+      parameters:
+        - $ref: '#/components/parameters/brandId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandUpdate'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+    delete:
+      summary: Delete a car brand
+      parameters:
+        - $ref: '#/components/parameters/brandId'
+      responses:
+        '204':
+          description: Successful response
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /brands/{brandId}/models:
+    get:
+      summary: Retrieve a list of models for a specific brand
+      parameters:
+        - $ref: '#/components/parameters/brandId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Model'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+    post:
+      summary: Create a new car model for a specific brand
+      parameters:
+        - $ref: '#/components/parameters/brandId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelCreate'
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /brands/{brandId}/models/{modelId}:
+    get:
+      summary: Retrieve details of a specific model
+      parameters:
+        - $ref: '#/components/parameters/modelId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+    put:
+      summary: Update an existing car model for a specific brand
+      parameters:
+        - $ref: '#/components/parameters/brandId'
+        - $ref: '#/components/parameters/modelId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelUpdate'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+    delete:
+      summary: Delete a car model for a specific brand
+      parameters:
+        - $ref: '#/components/parameters/brandId'
+        - $ref: '#/components/parameters/modelId'
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /interests:
+    post:
+      summary: Mark a car as interesting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterestCreate'
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interest'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+components:
+  schemas:
+    Car:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        overview:
+          type: string
+        price:
+          type: number
+        image:
+          type: string
+          format: binary
+        modelId:
+          type: string
+        brandId:
+          type: string
+        additional_option:
+          type: object
+          additionalProperties:
+            type: string
+        specifications:
+          type: object
+          additionalProperties:
+            type: string
+        history_check:
+          type: object
+          additionalProperties:
+            type: string
+
+    CarCreate:
+      type: object
+      properties:
+        title:
+          type: string
+        overview:
+          type: string
+        price:
+          type: number
+        image:
+          type: string
+          format: binary
+        modelId:
+          type: string
+        brandId:
+          type: string
+        additional_option:
+          type: object
+          additionalProperties:
+            type: string
+        specifications:
+          type: object
+          additionalProperties:
+            type: string
+        history_check:
+          type: object
+          additionalProperties:
+            type: string
+      required:
+        - title
+        - overview
+        - price
+        - modelId
+        - brandId
+
+    CarUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        overview:
+          type: string
+        price:
+          type: number
+        image:
+          type: string
+          format: binary
+        additional_option:
+          type: object
+          additionalProperties:
+            type: string
+        specifications:
+          type: object
+          additionalProperties:
+            type: string
+        history_check:
+          type: object
+          additionalProperties:
+            type: string
+
+    Brand:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+
+    BrandCreate:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+
+    BrandUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+
+    Model:
+      type: object
+      properties:
+        id:
+          type: string
+        brandId:
+          type: string
+        name:
+          type: string
+
+    ModelCreate:
+      type: object
+      properties:
+        brandId:
+          type: string
+        name:
+          type: string
+      required:
+        - brandId
+        - name
+
+    ModelUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+
+    InterestCreate:
+      type: object
+      properties:
+        carId:
+          type: string
+        userId:
+          type: string
+      required:
+        - carId
+        - userId
+
+    Interest:
+      type: object
+      properties:
+        id:
+          type: string
+        carId:
+          type: string
+        userId:
+          type: string
+
+  parameters:
+    carId:
+      name: carId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    brandId:
+      name: brandId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    modelId:
+      name: modelId
+      in: path
+      required: true
+      schema:
+        type: string
